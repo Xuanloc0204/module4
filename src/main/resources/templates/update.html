@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cập Nhật Sản Phẩm</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .close-btn {
+            background-color: red;
+        }
+    </style>
+    <script src="updateProduct.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Cập Nhật Sản Phẩm</h2>
+    <form id="updateProductForm">
+        <div class="form-group">
+            <label for="name">Tên sản phẩm:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Giá:</label>
+            <input type="number" id="price" name="price" required>
+        </div>
+
+        <div class="form-group">
+            <label for="type">Loại sản phẩm:</label>
+            <select id="type" name="type">
+                <option value="1">Loại 1</option>
+                <option value="2">Loại 2</option>
+                <option value="3">Loại 3</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Trạng thái:</label>
+            <select id="status" name="status">
+                <option value="Còn hàng">Còn hàng</option>
+                <option value="Hết hàng">Hết hàng</option>
+            </select>
+        </div>
+
+        <button type="submit">Cập Nhật</button>
+        <button type="button" class="close-btn" id="closeFormBtn">Hủy</button>
+    </form>
+</div>
+
+</body>
+</html>
