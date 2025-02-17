@@ -76,7 +76,7 @@
     </table>
 
     <div class="mt-3">
-        <button class="btn btn-danger" onclick="deleteProduct()">Xóa</button>
+        <button class="btn btn-danger" onclick="deleteMultipleProducts()">Xóa</button>
     </div> <br>
 
     <nav aria-label="Page navigation">
@@ -103,30 +103,47 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    function selectAll() {
-        let selectAllCheckbox = document.getElementById('selectAll');
-        let productCheckboxes = document.getElementsByClassName('product-checkbox');
-        for(let cb of productCheckboxes) {
-            cb.checked = selectAllCheckbox.checked;
-        }
+
+    function getSelectedProductIds() {
+        let selectedIds = [];
+        $(".product-checkbox:checked").each(function () {
+            selectedIds.push($(this).val()); // Lấy giá trị (ID sản phẩm)
+        });
+        return selectedIds;
     }
-    function deleteProduct() {
-        let idList = [];
-        let productCheckboxes = document.getElementsByClassName('product-checkbox');
-        for(let cb of productCheckboxes) {
-            if(cb.checked)
-                idList.push(cb.value);
+
+    function deleteMultipleProducts() {
+        let selectedIds = getSelectedProductIds();
+
+        if (selectedIds.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để xóa.");
+            return;
+        }
+
+        if (!confirm("Bạn có chắc chắn muốn xóa các sản phẩm đã chọn?")) {
+            return;
         }
 
         $.ajax({
-            url: `http://localhost:8080/product`,
-            type: `DELETE`,
-            data: idList,
-            success: function () {
+            url: "http://localhost:8080/product/delete",
+            type: "DELETE",
+            contentType: "application/json",
+            data: JSON.stringify(selectedIds),
+            success: function (response) {
+                alert(response);
                 location.reload();
+            },
+            error: function (xhr) {
+                alert("Lỗi khi xóa: " + xhr.responseText);
             }
-        })
+        });
     }
+
+    // Tích chọn tất cả sản phẩm
+    $("#selectAll").change(function () {
+        $(".product-checkbox").prop("checked", this.checked);
+    });
+
 </script>
 </body>
 </html>

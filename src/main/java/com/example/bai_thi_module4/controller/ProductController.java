@@ -6,12 +6,15 @@ import com.example.bai_thi_module4.model.ProductType;
 import com.example.bai_thi_module4.service.IProductService;
 import com.example.bai_thi_module4.service.IProductTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
+
 @Controller
 @RequestMapping("/product")
 public class ProductController {
@@ -57,18 +60,29 @@ public class ProductController {
         return new ModelAndView("redirect:/product");
     }
 
-    @DeleteMapping
-    public ModelAndView delete(List<Long> idList) {
-        ModelAndView mv = new ModelAndView("index");
-        for (Long id : idList) {
-            productService.delete(productService.findById(id).get());
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteProducts(@RequestBody List<Long> idList) {
+        if (idList == null || idList.isEmpty()) {
+            return ResponseEntity.badRequest().body("Danh sách ID không hợp lệ!");
         }
-        return mv;
+
+        for (Long id : idList) {
+            Optional<Product> product = productService.findById(id);
+            if (product.isPresent()) {
+                productService.delete(product.get());
+            }
+        }
+
+        return ResponseEntity.ok("Các sản phẩm đã bị xóa!");
     }
+
+
+
 
     @PutMapping("/{id}")
     public ModelAndView update(@ModelAttribute Product product, @PathVariable Long id) {
         productService.save(product);
         return new ModelAndView("redirect:/product");
     }
+
 }
