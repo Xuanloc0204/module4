@@ -1,29 +1,30 @@
 package com.example.bai_thi_module4.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "product")
 @Data
+@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "price")
-    private Double price;
+    private Double startingPrice;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "type_id", insertable = false, updatable = false)
+    private Long typeId;
 
-    @ManyToOne
-    @JoinColumn(name = "id_loai_sp", referencedColumnName = "cid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id")
+    @JsonManagedReference
     private ProductType productType;
 
-    // Không cần thiết phải tạo lại getter/setter do Lombok đã sinh tự động
+    @Enumerated(EnumType.STRING)
+    private EProductStatus status;
 }

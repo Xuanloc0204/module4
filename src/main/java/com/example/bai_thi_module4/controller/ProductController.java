@@ -2,47 +2,73 @@ package com.example.bai_thi_module4.controller;
 
 
 import com.example.bai_thi_module4.model.Product;
+import com.example.bai_thi_module4.model.ProductType;
 import com.example.bai_thi_module4.service.IProductService;
+import com.example.bai_thi_module4.service.IProductTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
-
-@RestController
-@CrossOrigin("*")
-@RequestMapping("/api/products")
+@Controller
+@RequestMapping("/product")
 public class ProductController {
     @Autowired
     private IProductService productService;
 
-    @GetMapping("")
-    public Iterable<Product> getAllProducts() {
-        return productService.findAll();
+    @Autowired
+    private IProductTypeService productTypeService;
+
+    @GetMapping
+    public ModelAndView index() {
+        ModelAndView mv = new ModelAndView("index");
+        List<Product> productList = productService.findAll();
+        List<ProductType> productTypeList = productTypeService.findAll();
+        mv.addObject("productList", productList);
+        mv.addObject("productTypeList", productTypeList);
+        return mv;
     }
 
-    @GetMapping("/{id}")
-    public Optional<Product> getProductById(Long id) {
-        return productService.findById(id);
+    @GetMapping("/create")
+    public ModelAndView create() {
+        ModelAndView mv = new ModelAndView("create");
+        Product product = new Product();
+        mv.addObject("product", product);
+        List<ProductType> productTypeList = productTypeService.findAll();
+        mv.addObject("productTypeList", productTypeList);
+        return mv;
     }
-    @PutMapping("/{id}")
-    public void updateProduct(@PathVariable Long id, @RequestBody Product productUpdate) {
-        Optional<Product> productOptional = productService.findById(id);
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            product.setName(productUpdate.getName());
-            product.setPrice(productUpdate.getPrice());
-            product.setStatus(productUpdate.getStatus());
-            productService.save(product);
+
+    @GetMapping("/update/{id}")
+    public ModelAndView update(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("update");
+        Product product = productService.findById(id).get();
+        mv.addObject("product", product);
+        List<ProductType> productTypeList = productTypeService.findAll();
+        mv.addObject("productTypeList", productTypeList);
+        return mv;
+    }
+
+    @PostMapping
+    public ModelAndView save(@ModelAttribute Product product) {
+        productService.save(product);
+        return new ModelAndView("redirect:/product");
+    }
+
+    @DeleteMapping
+    public ModelAndView delete(List<Long> idList) {
+        ModelAndView mv = new ModelAndView("index");
+        for (Long id : idList) {
+            productService.delete(productService.findById(id).get());
         }
+        return mv;
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
-        productService.deleteById(id);
-    }
-
-    @PostMapping("")
-    public Product createProduct(@RequestBody Product product) {
-        return productService.save(product);
+    @PutMapping("/{id}")
+    public ModelAndView update(@ModelAttribute Product product, @PathVariable Long id) {
+        productService.save(product);
+        return new ModelAndView("redirect:/product");
     }
 }

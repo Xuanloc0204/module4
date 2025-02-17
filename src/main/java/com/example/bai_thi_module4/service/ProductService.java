@@ -5,6 +5,7 @@ import com.example.bai_thi_module4.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -13,7 +14,7 @@ public class ProductService implements IProductService{
     private IProductRepository productRepository;
 
     @Override
-    public Iterable<Product> findAll() {
+    public List<Product> findAll() {
         return productRepository.findAll();
     }
 
@@ -23,13 +24,12 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Product save(Product object) {
-        productRepository.save(object);
-        return object;
+    public void save(Product product) {
+        productRepository.save(product);
     }
 
     @Override
-    public void deleteById(Long id) {
-        productRepository.deleteById(id);
+    public void delete(Product product) {
+        productRepository.delete(product);
     }
 }
